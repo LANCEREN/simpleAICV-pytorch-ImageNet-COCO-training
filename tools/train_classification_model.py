@@ -41,7 +41,8 @@ def main():
 
     args = parse_args()
     sys.path.append(args.work_dir)
-    from train_config import config
+    from classification_training.imagenet.resnet_vovnet_darknet_train_example.train_config import config
+
     log_dir = os.path.join(args.work_dir, 'log')
     checkpoint_dir = os.path.join(args.work_dir, 'checkpoints')
     resume_model = os.path.join(checkpoint_dir, 'latest.pth')

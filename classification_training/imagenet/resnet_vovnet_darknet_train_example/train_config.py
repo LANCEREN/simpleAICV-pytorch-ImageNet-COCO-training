@@ -23,7 +23,7 @@ class config:
     val_dataset_path = os.path.join(ILSVRC2012_path, 'val')
 
     network = 'resnet18'
-    pretrained = True
+    pretrained = False
     num_classes = 1000
     input_image_size = 224
     scale = 256 / 224
@@ -81,4 +81,4 @@ class config:
     # only in DistributedDataParallel mode can use sync_bn
     distributed = True
     sync_bn = False
-    apex = True
+    apex = False

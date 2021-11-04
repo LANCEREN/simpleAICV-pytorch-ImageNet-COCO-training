@@ -1,6 +1,6 @@
-pretrained_models_path = '/home/zgcr/下载/pretrained_models'
+pretrained_models_path = '/home/renge/Pycharm_Projects/simpleAICV-pytorch-ImageNet-COCO-training/pretrained_models'
 
-ILSVRC2012_path = '/home/zgcr/下载/datasets/ILSVRC2012'
+ILSVRC2012_path = '/mnt/data03/renge/public_dataset/pytorch/imagenet-data'
 CIFAR100_path = '/home/zgcr/下载/datasets/CIFAR100'
 
 COCO2017_path = '/home/zgcr/下载/datasets/COCO2017'
