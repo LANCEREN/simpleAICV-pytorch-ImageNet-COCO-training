@@ -10,6 +10,7 @@ from tools.path import ILSVRC2012_path
 
 from simpleAICV.classification import backbones
 from simpleAICV.classification import losses
+from simpleAICV.classification import dataset
 
 import torchvision.transforms as transforms
 import torchvision.datasets as datasets
@@ -33,6 +34,42 @@ class config:
         'num_classes': num_classes,
     })
     criterion = losses.__dict__['CELoss']()
+
+
+
+    data_root = os.path.expanduser(os.path.join(args.data_root, 'mini-imagenet-data'))
+    data_root_stegastamp = os.path.expanduser(os.path.join(args.data_root, "model_lock-data/mini-StegaStamp-data"))
+    num_workers = kwargs.setdefault('num_workers', 1)
+    kwargs.pop('input_size', None)
+    print("Building IMAGENET data loader with {} workers".format(num_workers))
+    ds = []
+    if train:
+        train_dataset = LockSTEGASTAMPMINIIMAGENET(args=args,
+                                                   root=os.path.join(data_root, 'train'),
+                                                   authorized_dataset=False,
+                                                   transform=transforms.Compose([
+                                                       transforms.Resize([224, 224]),
+                                                       transforms.RandomHorizontalFlip(),
+                                                       transforms.ToTensor(),
+                                                       transforms.Normalize((0.485, 0.456, 0.406),
+                                                                            (0.229, 0.224, 0.225)),
+                                                   ]))
+        train_dataset_authorized = LockSTEGASTAMPMINIIMAGENET(args=args,
+                                                              root=os.path.join(data_root_stegastamp, 'hidden',
+                                                                                'train'),
+                                                              authorized_dataset=True,
+                                                              transform=transforms.Compose([
+                                                                  transforms.Resize([224, 224]),
+                                                                  transforms.RandomHorizontalFlip(),
+                                                                  transforms.ToTensor(),
+                                                                  transforms.Normalize((0.485, 0.456, 0.406),
+                                                                                       (0.229, 0.224, 0.225)),
+                                                              ]))
+        train_dataset_mix = train_dataset.__add__(train_dataset_authorized)
+        train_loader = torch.utils.data.DataLoader(
+            dataset=train_dataset_mix, batch_size=args.batch_size, shuffle=False,
+            sampler=torch.utils.data.distributed.DistributedSampler(train_dataset_mix), **kwargs)
+
 
     train_dataset = datasets.ImageFolder(
         train_dataset_path,
